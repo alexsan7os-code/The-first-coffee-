@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#16100A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="First Coffee">
+<meta name="description" content="O mundo no seu primeiro café.">
+
+<!-- PWA Icon (SVG inline as data URI — works on iOS) -->
+
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%2316100A'/%3E%3Crect width='512' height='512' rx='110' fill='url(%23g)'/%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='30%25'%3E%3Cstop offset='0' stop-color='%23382010' /%3E%3Cstop offset='100%25' stop-color='%2316100A' /%3E%3C/radialGradient%3E%3C/defs%3E%3Ctext x='256' y='310' font-size='260' text-anchor='middle' font-family='Georgia,serif'%3E%E2%98%95%3C/text%3E%3Ctext x='256' y='420' font-size='52' text-anchor='middle' font-family='Georgia,serif' fill='%23C8921A' font-weight='bold' letter-spacing='4'%3EFIRST COFFEE%3C/text%3E%3C/svg%3E">
+
+<title>The First Coffee</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════
+   TOKENS
+═══════════════════════════════════ */
+:root {
+  --ink:       #16100A;
+  --ink2:      #1E1510;
+  --ink3:      #261C12;
+  --parch:     #F0E6D0;
+  --parch2:    #D8CEBA;
+  --cream:     #B8A882;
+  --gold:      #C8921A;
+  --gold-dim:  rgba(200,146,26,0.15);
+  --gold-line: rgba(200,146,26,0.22);
+  --roast:     #7A4820;
+  --muted:     #7A6A50;
+  --border:    rgba(200,146,26,0.13);
+  --red:       #8B2415;
+  --green:     #2A5A3A;
+  --safe-t: env(safe-area-inset-top,    0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left,   0px);
+  --safe-r: env(safe-area-inset-right,  0px);
+  /* TYPE */
+  --f-display: 'Merriweather', Georgia, serif;
+  --f-body:    'Lora', Georgia, serif;
+  --f-mono:    'IBM Plex Mono', monospace;
+  /* SCALE */
+  --sz-xs:  11px;
+  --sz-sm:  13px;
+  --sz-base:18px;
+  --sz-md:  20px;
+  --sz-lg:  24px;
+  --sz-xl:  30px;
+  --sz-2xl: 36px;
+  --lh: 1.85;
+}
+
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html { height:100%; background:var(--ink); }
+body {
+  min-height:100%;
+  color:var(--parch);
+  font-family:var(--f-body);
+  font-size:var(--sz-base);
+  line-height:var(--lh);
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior:none;
+}
+
+/* ═══════════════════════════════════
+   SPLASH SCREEN
+═══════════════════════════════════ */
+#splash {
+  position:fixed; inset:0; z-index:9999;
+  background:var(--ink);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:0;
+  transition:opacity 0.6s ease, transform 0.6s ease;
+}
+
+#splash.fade-out {
+  opacity:0;
+  transform:scale(1.04);
+  pointer-events:none;
+}
+
+.splash-ring {
+  position:relative; width:110px; height:110px;
+  margin-bottom:32px;
+}
+
+.splash-ring-outer {
+  position:absolute; inset:0;
+  border:1px solid rgba(200,146,26,0.2);
+  border-radius:50%;
+  animation:ring-spin 8s linear infinite;
+}
+
+.splash-ring-outer::before {
+  content:'';
+  position:absolute; top:-3px; left:50%; transform:translateX(-50%);
+  width:6px; height:6px; border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 10px var(--gold);
+}
+
+@keyframes ring-spin { to { transform:rotate(360deg); } }
+
+.splash-cup {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:52px;
+  animation:cup-float 2.5s ease-in-out infinite;
+}
+
+@keyframes cup-float {
+  0%,100% { transform:translateY(0); }
+  50%      { transform:translateY(-5px); }
+}
+
+.splash-title {
+  font-family:var(--f-display);
+  font-size:var(--sz-lg);
+  font-weight:900;
+  color:var(--parch);
+  letter-spacing:-0.5px;
+  margin-bottom:6px;
+  opacity:0;
+  animation:fadeUp 0.7s 0.3s forwards;
+}
+.splash-title em { color:var(--gold); font-style:italic; }
+
+.splash-tagline {
+  font-family:var(--f-body);
+  font-size:var(--sz-base);
+  font-style:italic;
+  color:var(--muted);
+  opacity:0;
+  animation:fadeUp 0.7s 0.55s forwards;
+}
+
+.splash-bar-wrap {
+  margin-top:40px;
+  width:120px;
+  height:2px;
+  background:rgba(200,146,26,0.12);
+  overflow:hidden;
+  opacity:0;
+  animation:fadeUp 0.5s 0.8s forwards;
+}
+
+.splash-bar {
+  height:100%;
+  background:var(--gold);
+  width:0%;
+  animation:load-bar 2.2s 0.9s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+@keyframes load-bar { to { width:100%; } }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ═══════════════════════════════════
+   APP SHELL
+═══════════════════════════════════ */
+#shell {
+  display:flex; flex-direction:column;
+  min-height:100dvh; max-width:540px; margin:0 auto;
+  opacity:0; transition:opacity 0.5s ease;
+}
+#shell.visible { opacity:1; }
+
+/* ═══════════════════════════════════
+   MASTHEAD
+═══════════════════════════════════ */
+.masthead {
+  padding:calc(var(--safe-t) + 14px) 20px 14px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  flex-shrink:0; background:var(--ink);
+  position:sticky; top:0; z-index:60;
+}
+
+.brand {
+  font-family:var(--f-display);
+  font-size:18px; font-weight:900;
+  color:var(--parch); letter-spacing:-0.3px; line-height:1; white-space:nowrap;
+}
+.brand em { color:var(--gold); font-style:normal; }
+
+.masthead-r { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+
+.lang-toggle { display:flex; border:1px solid var(--border); overflow:hidden; }
+.lang-btn {
+  background:none; border:none; color:var(--muted);
+  font-family:var(--f-mono); font-size:10px; font-weight:500;
+  letter-spacing:1px; padding:5px 11px; cursor:pointer;
+  transition:background 0.2s, color 0.2s; white-space:nowrap;
+}
+.lang-btn.on { background:var(--gold); color:var(--ink); font-weight:700; }
+
+.hdr-date {
+  font-family:var(--f-mono); font-size:9px;
+  color:var(--muted); letter-spacing:0.5px; text-transform:uppercase; white-space:nowrap;
+}
+
+/* ═══════════════════════════════════
+   NAV
+═══════════════════════════════════ */
+#nav {
+  display:none; border-bottom:1px solid var(--border);
+  background:var(--ink2); flex-shrink:0;
+  overflow-x:auto; scrollbar-width:none;
+}
+#nav::-webkit-scrollbar { display:none; }
+.nav-inner { display:flex; min-width:max-content; width:100%; }
+
+.nav-tab {
+  flex:1; min-width:64px; padding:11px 6px 10px;
+  background:none; border:none;
+  border-bottom:2px solid transparent;
+  color:var(--muted);
+  font-family:var(--f-mono); font-size:9px; font-weight:500;
+  letter-spacing:1.2px; text-transform:uppercase;
+  cursor:pointer; display:flex; flex-direction:column;
+  align-items:center; gap:4px;
+  transition:color 0.2s, border-color 0.2s;
+}
+.nav-tab .ni { font-size:17px; line-height:1; }
+.t-geo { color:var(--gold);   border-color:var(--gold); }
+.t-btc { color:#D4A020;       border-color:#D4A020; }
+.t-sci { color:#5AAA6A;       border-color:#5AAA6A; }
+.t-col { color:#C08080;       border-color:#C08080; }
+.t-x   { color:var(--parch);  border-color:var(--parch); }
+
+/* ═══════════════════════════════════
+   SCROLL BODY
+═══════════════════════════════════ */
+#body {
+  flex:1; overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  padding:28px 20px calc(var(--safe-b) + 48px);
+}
+#body::-webkit-scrollbar { width:3px; }
+#body::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+/* ═══════════════════════════════════
+   SCREEN: SETUP
+═══════════════════════════════════ */
+#s-setup { display:block; }
+
+.hero { text-align:center; padding:24px 0 22px; }
+.hero-cup { font-size:54px; display:block; margin-bottom:18px; animation:cup-float 3s ease-in-out infinite; }
+.hero-title {
+  font-family:var(--f-display);
+  font-size:var(--sz-xl); font-weight:900;
+  line-height:1.2; color:var(--parch); margin-bottom:12px;
+}
+.hero-title em { color:var(--gold); font-style:italic; }
+.hero-sub {
+  font-size:var(--sz-md); color:var(--muted);
+  line-height:1.7; font-style:italic; margin-bottom:22px;
+}
+.pills { display:flex; gap:7px; justify-content:center; flex-wrap:wrap; }
+.pill {
+  padding:5px 13px; border:1px solid var(--border);
+  font-family:var(--f-mono); font-size:9px;
+  letter-spacing:1.5px; text-transform:uppercase; color:var(--muted);
+}
+
+/* Setup card */
+.scard {
+  background:var(--ink2); border:1px solid var(--border);
+  padding:24px 20px; margin-top:24px; position:relative; overflow:hidden;
+}
+.scard::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(to right, transparent, var(--gold), transparent); opacity:0.3;
+}
+.clabel {
+  font-family:var(--f-mono); font-size:9px; font-weight:500;
+  letter-spacing:2.5px; text-transform:uppercase;
+  color:var(--gold); opacity:0.8; margin-bottom:14px;
+}
+.fwrap { position:relative; margin-bottom:12px; }
+.field {
+  width:100%; background:rgba(255,255,255,0.03);
+  border:1px solid rgba(200,146,26,0.1);
+  border-bottom-color:var(--border);
+  color:var(--parch); font-family:var(--f-mono);
+  font-size:13px; letter-spacing:0.5px;
+  padding:13px 44px 13px 15px; outline:none;
+  transition:border-color 0.25s, background 0.25s;
+  -webkit-appearance:none; border-radius:0;
+}
+.field:focus { border-color:rgba(200,146,26,0.45); background:rgba(200,146,26,0.04); }
+.field::placeholder { color:rgba(200,146,26,0.18); }
+.eye-btn {
+  position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  background:none; border:none; color:var(--muted);
+  cursor:pointer; font-size:15px; padding:4px; opacity:0.5;
+  transition:opacity 0.2s;
+}
+.eye-btn:hover { opacity:1; }
+.fhint {
+  font-family:var(--f-mono); font-size:10px;
+  color:var(--muted); line-height:1.65; opacity:0.85;
+}
+.fhint a { color:var(--gold); text-decoration:none; }
+.fhint a:hover { text-decoration:underline; }
+
+.brew-btn {
+  width:100%; margin-top:20px;
+  background:var(--roast); color:var(--parch); border:none;
+  padding:17px; font-family:var(--f-mono); font-size:11px;
+  font-weight:500; letter-spacing:3px; text-transform:uppercase;
+  cursor:pointer; transition:background 0.2s, transform 0.1s; border-radius:0;
+}
+.brew-btn:not(:disabled):hover  { background:#8A5228; }
+.brew-btn:not(:disabled):active { transform:scale(0.99); }
+.brew-btn:disabled { background:rgba(255,255,255,0.04); color:var(--muted); cursor:default; opacity:0.5; }
+
+/* Install hint card */
+.install-card {
+  background:rgba(200,146,26,0.05); border:1px solid rgba(200,146,26,0.18);
+  padding:18px 20px; margin-top:16px;
+}
+.install-card-title {
+  font-family:var(--f-mono); font-size:9px; font-weight:500;
+  letter-spacing:2px; text-transform:uppercase; color:var(--gold);
+  margin-bottom:10px; opacity:0.85;
+}
+.install-steps {
+  font-family:var(--f-body); font-size:var(--sz-base);
+  color:var(--muted); line-height:1.8;
+}
+.install-steps strong { color:var(--parch); }
+
+/* ═══════════════════════════════════
+   SCREEN: BREWING
+═══════════════════════════════════ */
+#s-brew {
+  display:none; flex-direction:column; align-items:center;
+  justify-content:center; min-height:58vh; gap:22px; text-align:center;
+}
+.brew-anim { position:relative; width:60px; height:60px; }
+.brew-ring {
+  position:absolute; inset:0; border:2px solid var(--border);
+  border-top-color:var(--gold); border-radius:50%;
+  animation:spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.brew-cup-sm {
+  position:absolute; inset:0; display:flex;
+  align-items:center; justify-content:center; font-size:24px;
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(0.88);opacity:0.6;} }
+.brew-lbl {
+  font-family:var(--f-mono); font-size:11px;
+  letter-spacing:2px; text-transform:uppercase; color:var(--muted); min-height:20px;
+}
+.brew-dots { display:flex; gap:10px; }
+.bdot { width:8px; height:8px; border-radius:50%; background:var(--border); transition:background 0.4s,transform 0.3s; }
+.bdot.done   { background:var(--gold); transform:scale(1.3); }
+.bdot.active { background:var(--muted); animation:bdp 0.8s ease-in-out infinite; }
+@keyframes bdp { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+/* ═══════════════════════════════════
+   SCREEN: ERROR
+═══════════════════════════════════ */
+#s-error {
+  display:none; flex-direction:column; align-items:center;
+  justify-content:center; min-height:55vh; gap:14px; text-align:center;
+}
+.err-icon { font-size:44px; }
+.err-title { font-family:var(--f-display); font-size:var(--sz-lg); font-weight:700; color:var(--red); }
+.err-box {
+  font-family:var(--f-mono); font-size:12px; color:var(--muted);
+  max-width:300px; line-height:1.7; padding:14px 18px;
+  border:1px solid rgba(139,36,21,0.2); background:rgba(139,36,21,0.05);
+}
+.back-btn {
+  background:none; border:1px solid rgba(139,36,21,0.3); color:var(--red);
+  padding:11px 28px; font-family:var(--f-mono); font-size:10px;
+  letter-spacing:2px; text-transform:uppercase; cursor:pointer; margin-top:4px;
+  transition:background 0.2s;
+}
+.back-btn:hover { background:rgba(139,36,21,0.07); }
+
+/* ═══════════════════════════════════
+   CONTENT — shared
+═══════════════════════════════════ */
+#s-content { display:none; }
+
+.pane { display:none; }
+.pane.on { display:block; animation:riseIn 0.32s cubic-bezier(0.22,1,0.36,1); }
+@keyframes riseIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+
+.sec-head {
+  display:flex; align-items:flex-start; gap:13px;
+  margin-bottom:26px; padding-bottom:16px; border-bottom:1px solid var(--border);
+}
+.sec-icon { font-size:28px; line-height:1; padding-top:4px; flex-shrink:0; }
+.sec-name {
+  font-family:var(--f-display); font-size:var(--sz-lg);
+  font-weight:900; color:var(--gold); letter-spacing:-0.5px; line-height:1.1; margin-bottom:4px;
+}
+.sec-date { font-family:var(--f-mono); font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+
+/* News card */
+.ncard { padding:24px 0; border-bottom:1px solid var(--border); }
+.ncard:last-child { border-bottom:none; }
+.ncard-num {
+  display:inline-block; font-family:var(--f-mono); font-size:10px;
+  font-weight:500; letter-spacing:2px; padding:4px 12px; margin-bottom:14px; color:var(--ink);
+}
+.ncard-title {
+  font-family:var(--f-display); font-size:var(--sz-xl);
+  font-weight:900; line-height:1.2; letter-spacing:-0.5px;
+  color:var(--parch); margin-bottom:13px;
+}
+.ncard-body {
+  font-family:var(--f-body); font-size:var(--sz-md);
+  line-height:var(--lh); color:var(--parch2); margin-bottom:15px; font-weight:400;
+}
+.ncard-src { display:flex; align-items:center; gap:10px; }
+.ncard-rule { width:18px; height:1px; flex-shrink:0; }
+.ncard-src-txt { font-family:var(--f-mono); font-size:10px; color:var(--muted); letter-spacing:0.5px; }
+
+/* ── Science topics ── */
+.stopic {
+  margin-bottom:28px; padding:22px 20px 20px;
+  background:var(--ink2); border:1px solid var(--border);
+  position:relative; overflow:hidden;
+}
+.stopic::before { content:''; position:absolute; top:0; left:0; bottom:0; width:3px; }
+.tp-nutri::before { background:#5AAA6A; }
+.tp-suppl::before { background:#4A8AAA; }
+.tp-micro::before { background:#AA7A3A; }
+.tp-natur::before { background:#6A8A5A; }
+.tp-study::before { background:#8A6AAA; }
+
+.stopic-tag {
+  font-family:var(--f-mono); font-size:9px; font-weight:500;
+  letter-spacing:2.5px; text-transform:uppercase; margin-bottom:11px; display:block;
+}
+.stopic-title {
+  font-family:var(--f-display); font-size:var(--sz-lg);
+  font-weight:700; line-height:1.25; color:var(--parch); margin-bottom:12px; letter-spacing:-0.3px;
+}
+.stopic-body {
+  font-family:var(--f-body); font-size:var(--sz-md);
+  line-height:var(--lh); color:var(--parch2); font-weight:400;
+}
+.stopic-src { display:flex; align-items:center; gap:8px; margin-top:14px; }
+
+/* ── Column ── */
+.col-intro {
+  background:var(--ink2); border:1px solid var(--border);
+  padding:20px; margin-bottom:26px; position:relative; overflow:hidden;
+}
+.col-intro::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(to right, #C08080, transparent);
+}
+.col-byline { font-family:var(--f-mono); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#C08080; margin-bottom:8px; }
+.col-intro-text { font-family:var(--f-body); font-size:var(--sz-base); font-style:italic; color:var(--cream); line-height:1.8; }
+
+.col-sec { margin-bottom:28px; padding-bottom:28px; border-bottom:1px solid var(--border); }
+.col-sec:last-child { border-bottom:none; }
+.col-sec-icon { font-size:20px; margin-bottom:8px; display:block; }
+.col-sec-label { font-family:var(--f-mono); font-size:9px; letter-spacing:2.5px; text-transform:uppercase; color:#C08080; margin-bottom:8px; }
+.col-sec-title {
+  font-family:var(--f-display); font-size:var(--sz-xl);
+  font-weight:900; line-height:1.2; color:var(--parch); margin-bottom:14px; letter-spacing:-0.5px;
+}
+.col-body { font-family:var(--f-body); font-size:var(--sz-md); line-height:1.9; color:var(--parch2); }
+.col-body p { margin-bottom:16px; }
+.col-body p:last-child { margin-bottom:0; }
+
+/* ── X Post ── */
+.x-wrap { display:flex; flex-direction:column; gap:20px; }
+
+.x-card {
+  background:var(--ink2); border:1px solid var(--border);
+  padding:22px 20px; position:relative; overflow:hidden;
+}
+.x-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(to right, transparent, rgba(240,230,208,0.18), transparent);
+}
+.x-card-header {
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;
+}
+.x-card-label {
+  display:flex; align-items:center; gap:9px;
+  font-family:var(--f-mono); font-size:9px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--muted); font-weight:500;
+}
+.x-card-actions { display:flex; align-items:center; gap:10px; }
+.x-count { font-family:var(--f-mono); font-size:11px; color:var(--muted); }
+.x-count.warn { color:var(--red); }
+.copy-btn {
+  background:none; border:1px solid var(--border); color:var(--muted);
+  padding:6px 16px; font-family:var(--f-mono); font-size:9px;
+  letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:all 0.2s;
+}
+.copy-btn.copied { background:var(--green); border-color:var(--green); color:#fff; }
+
+.x-post-text {
+  font-family:var(--f-body); font-size:var(--sz-md);
+  line-height:1.8; color:var(--parch2); white-space:pre-wrap;
+}
+
+.x-tip {
+  background:rgba(200,146,26,0.06); border:1px solid rgba(200,146,26,0.15);
+  padding:14px 16px; margin-top:4px;
+}
+.x-tip-title {
+  font-family:var(--f-mono); font-size:9px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--gold); opacity:0.7; margin-bottom:8px;
+}
+.x-tip-body { font-family:var(--f-body); font-size:var(--sz-base); color:var(--muted); line-height:1.7; }
+
+/* Refresh */
+.refresh-wrap { text-align:center; padding:34px 0 8px; }
+.refresh-btn {
+  background:none; border:1px solid var(--border); color:var(--muted);
+  padding:12px 32px; font-family:var(--f-mono); font-size:10px;
+  letter-spacing:2.5px; text-transform:uppercase; cursor:pointer; transition:all 0.2s;
+}
+.refresh-btn:hover { border-color:var(--gold-line); color:var(--gold); }
+
+/* ═══════════════════════════════════
+   iOS INSTALL OVERLAY
+═══════════════════════════════════ */
+#ios-hint {
+  display:none; position:fixed;
+  bottom:calc(var(--safe-b) + 12px); left:50%; transform:translateX(-50%);
+  width:calc(100% - 24px); max-width:500px;
+  background:#1C1208; border:1px solid rgba(200,146,26,0.28);
+  padding:20px 20px; z-index:999; box-shadow:0 12px 40px rgba(0,0,0,0.85);
+}
+.ios-t { font-family:var(--f-display); font-size:var(--sz-md); font-weight:700; color:var(--gold); margin-bottom:12px; }
+.ios-s { font-family:var(--f-body); font-size:var(--sz-base); color:var(--muted); line-height:1.9; }
+.ios-s strong { color:var(--parch); }
+.ios-close {
+  margin-top:14px; width:100%; background:none; border:1px solid var(--border);
+  color:var(--muted); padding:10px; font-family:var(--f-mono);
+  font-size:10px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;
+}
+</style>
+
+</head>
+<body>
+
+<!-- ═══════════════════════
+     SPLASH SCREEN
+═══════════════════════ -->
+
+<div id="splash">
+  <div class="splash-ring">
+    <div class="splash-ring-outer"></div>
+    <div class="splash-cup">☕</div>
+  </div>
+  <div class="splash-title">The <em>First</em> Coffee</div>
+  <div class="splash-tagline">O mundo no seu primeiro café.</div>
+  <div class="splash-bar-wrap">
+    <div class="splash-bar"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════
+     APP
+═══════════════════════ -->
+
+<div id="shell">
+
+  <!-- MASTHEAD -->
+
+  <header class="masthead">
+    <div class="brand">The <em>First</em> Coffee</div>
+    <div class="masthead-r">
+      <div class="lang-toggle">
+        <button class="lang-btn on" id="btn-pt" onclick="setLang('pt')">PT</button>
+        <button class="lang-btn"    id="btn-en" onclick="setLang('en')">EN</button>
+      </div>
+      <div class="hdr-date" id="hdr-date"></div>
+    </div>
+  </header>
+
+  <!-- NAV -->
+
+  <nav id="nav">
+    <div class="nav-inner">
+      <button class="nav-tab" data-t="geo" onclick="goTab('geo')">
+        <span class="ni">🌍</span><span data-k="tab_geo">Geo</span>
+      </button>
+      <button class="nav-tab" data-t="btc" onclick="goTab('btc')">
+        <span class="ni">₿</span><span data-k="tab_btc">Bitcoin</span>
+      </button>
+      <button class="nav-tab" data-t="sci" onclick="goTab('sci')">
+        <span class="ni">🔬</span><span data-k="tab_sci">Ciência</span>
+      </button>
+      <button class="nav-tab" data-t="col" onclick="goTab('col')">
+        <span class="ni">✍️</span><span data-k="tab_col">Visão</span>
+      </button>
+      <button class="nav-tab" data-t="x" onclick="goTab('x')">
+        <span class="ni">𝕏</span><span data-k="tab_x">Post X</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- SCROLL -->
+
+  <main id="body">
+
+```
+<!-- SETUP -->
+<div id="s-setup">
+  <div class="hero">
+    <span class="hero-cup">☕</span>
+    <h1 class="hero-title">O mundo no seu<br><em>primeiro café.</em></h1>
+    <p class="hero-sub" data-k="hero_sub">Geopolítica · Bitcoin · Ciência<br>As notícias que mudam a sua vida.</p>
+    <div class="pills">
+      <span class="pill">🌍 <span data-k="p_geo">Geopolítica</span></span>
+      <span class="pill">₿ Bitcoin</span>
+      <span class="pill">🔬 <span data-k="p_sci">Ciência</span></span>
+      <span class="pill">✍️ <span data-k="p_col">Coluna</span></span>
+      <span class="pill">𝕏 Post</span>
+    </div>
+  </div>
+
+  <div class="scard">
+    <div class="clabel" data-k="key_lbl">Chave API Anthropic</div>
+    <div class="fwrap">
+      <input id="fld-key" class="field" type="password"
+        placeholder="sk-ant-api03-..."
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+        oninput="onKey()">
+      <button class="eye-btn" onclick="toggleEye()">👁</button>
+    </div>
+    <p class="fhint">
+      <span data-k="key_hint">Obtenha em</span>
+      <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.
+      <span data-k="key_hint2">Salva apenas neste dispositivo.</span>
+    </p>
+    <button id="btn-brew" class="brew-btn" onclick="startBrew()" disabled>
+      ☕ &nbsp;<span data-k="brew_lbl">Preparar Edição de Hoje</span>
+    </button>
+  </div>
+
+  <!-- iOS install card (shown only on iOS Safari) -->
+  <div class="install-card" id="install-card" style="display:none">
+    <div class="install-card-title" data-k="install_title">Adicionar à Tela Inicial</div>
+    <div class="install-steps" data-k-html="install_steps">
+      1. Toque em <strong>⬆ Compartilhar</strong> no Safari<br>
+      2. Escolha <strong>"Adicionar à Tela Inicial"</strong><br>
+      3. Confirme com <strong>Adicionar</strong><br>
+      4. O ícone ☕ aparece na sua tela — toque para abrir.
+    </div>
+  </div>
+</div><!-- /setup -->
+
+<!-- BREWING -->
+<div id="s-brew">
+  <div class="brew-anim">
+    <div class="brew-ring"></div>
+    <div class="brew-cup-sm">☕</div>
+  </div>
+  <div class="brew-lbl" id="brew-lbl">A preparar...</div>
+  <div class="brew-dots">
+    <div class="bdot" id="bd-0"></div>
+    <div class="bdot" id="bd-1"></div>
+    <div class="bdot" id="bd-2"></div>
+    <div class="bdot" id="bd-3"></div>
+    <div class="bdot" id="bd-4"></div>
+  </div>
+</div>
+
+<!-- ERROR -->
+<div id="s-error">
+  <div class="err-icon">⚠️</div>
+  <div class="err-title" data-k="err_t">Algo deu errado</div>
+  <div class="err-box" id="err-box">Erro desconhecido.</div>
+  <button class="back-btn" onclick="goSetup()" data-k="err_back">← Voltar</button>
+</div>
+
+<!-- CONTENT -->
+<div id="s-content">
+
+  <div id="pane-geo" class="pane">
+    <div class="sec-head">
+      <span class="sec-icon">🌍</span>
+      <div><div class="sec-name" data-k="sec_geo">Geopolítica</div><div class="sec-date" id="sd-geo"></div></div>
+    </div>
+    <div id="c-geo"></div>
+  </div>
+
+  <div id="pane-btc" class="pane">
+    <div class="sec-head">
+      <span class="sec-icon">₿</span>
+      <div><div class="sec-name">Bitcoin &amp; Cripto</div><div class="sec-date" id="sd-btc"></div></div>
+    </div>
+    <div id="c-btc"></div>
+  </div>
+
+  <div id="pane-sci" class="pane">
+    <div class="sec-head">
+      <span class="sec-icon">🔬</span>
+      <div><div class="sec-name" data-k="sec_sci">Ciência &amp; Saúde</div><div class="sec-date" id="sd-sci"></div></div>
+    </div>
+    <div id="c-sci"></div>
+  </div>
+
+  <div id="pane-col" class="pane">
+    <div class="sec-head">
+      <span class="sec-icon">✍️</span>
+      <div><div class="sec-name" data-k="sec_col">A Minha Visão</div><div class="sec-date" id="sd-col"></div></div>
+    </div>
+    <div id="c-col"></div>
+  </div>
+
+  <div id="pane-x" class="pane">
+    <div class="x-wrap">
+      <div class="x-card">
+        <div class="x-card-header">
+          <div class="x-card-label">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <span data-k="x_post_lbl">Post para X</span>
+          </div>
+          <div class="x-card-actions">
+            <span class="x-count" id="x-cnt">0/500</span>
+            <button class="copy-btn" id="btn-copy" onclick="copyX()"><span data-k="copy_lbl">Copiar</span></button>
+          </div>
+        </div>
+        <div class="x-post-text" id="x-body"></div>
+      </div>
+      <div class="x-tip">
+        <div class="x-tip-title" data-k="x_tip_t">Dica</div>
+        <div class="x-tip-body" data-k="x_tip_b">Este post foi escrito com até 500 caracteres, ideal para o X Premium. Cole directamente no X e publique.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="refresh-wrap">
+    <button class="refresh-btn" onclick="goSetup()" data-k="refresh_lbl">↺ &nbsp;Nova edição</button>
+  </div>
+
+</div><!-- /content -->
+```
+
+  </main>
+</div><!-- /shell -->
+
+<!-- iOS HINT -->
+
+<div id="ios-hint">
+  <div class="ios-t" data-k="install_title">Adicionar à Tela Inicial</div>
+  <div class="ios-s" data-k-html="install_steps">
+    1. Toque em <strong>⬆ Compartilhar</strong> no Safari<br>
+    2. Escolha <strong>"Adicionar à Tela Inicial"</strong><br>
+    3. Confirme com <strong>Adicionar</strong>
+  </div>
+  <button class="ios-close" onclick="this.closest('#ios-hint').style.display='none'" data-k="ios_close">Fechar</button>
+</div>
+
+<!-- ═══════════════════════════════════
+     JS
+═══════════════════════════════════ -->
+
+<script>
+'use strict';
+
+/* ── i18n ── */
+const TR = {
+  pt: {
+    tab_geo:'Geo', tab_btc:'Bitcoin', tab_sci:'Ciência', tab_col:'Visão', tab_x:'Post X',
+    hero_sub:'Geopolítica · Bitcoin · Ciência\nAs notícias que mudam a sua vida.',
+    p_geo:'Geopolítica', p_sci:'Ciência', p_col:'Coluna',
+    key_lbl:'Chave API Anthropic',
+    key_hint:'Obtenha em', key_hint2:'Salva apenas neste dispositivo.',
+    brew_lbl:'Preparar Edição de Hoje',
+    err_t:'Algo deu errado', err_back:'← Voltar',
+    sec_geo:'Geopolítica', sec_sci:'Ciência & Saúde', sec_col:'A Minha Visão',
+    install_title:'Adicionar à Tela Inicial',
+    install_steps:'1. Toque em <strong>⬆ Compartilhar</strong> no Safari<br>2. Escolha <strong>"Adicionar à Tela Inicial"</strong><br>3. Confirme com <strong>Adicionar</strong><br>4. O ícone ☕ aparece na sua tela — toque para abrir.',
+    ios_close:'Fechar',
+    x_post_lbl:'Post para X', copy_lbl:'Copiar',
+    x_tip_t:'Dica de publicação',
+    x_tip_b:'Este post foi escrito com até 500 caracteres, ideal para o X Premium. Cole directamente no X e publique.',
+    refresh_lbl:'↺  Nova edição',
+    brew_steps:['Pesquisando Geopolítica…','Pesquisando Bitcoin…','Preparando Ciência & Saúde…','Escrevendo coluna editorial…','Redigindo post para X…'],
+    no_news:'Sem notícias disponíveis.',
+    col_byline:'Coluna Editorial · A Minha Visão',
+    col_intro:'Para além das manchetes — eis o que estas notícias significam para a sua vida, as suas decisões e o seu futuro.',
+  },
+  en: {
+    tab_geo:'Geo', tab_btc:'Bitcoin', tab_sci:'Science', tab_col:'Column', tab_x:'X Post',
+    hero_sub:'Geopolitics · Bitcoin · Science & Health\nThe news that shapes your life.',
+    p_geo:'Geopolitics', p_sci:'Science', p_col:'Column',
+    key_lbl:'Anthropic API Key',
+    key_hint:'Get your key at', key_hint2:'Stored only on this device.',
+    brew_lbl:"Brew Today's Edition",
+    err_t:'Something went wrong', err_back:'← Back',
+    sec_geo:'Geopolitics', sec_sci:'Science & Health', sec_col:'My Take',
+    install_title:'Add to Home Screen',
+    install_steps:'1. Tap <strong>⬆ Share</strong> in Safari<br>2. Choose <strong>"Add to Home Screen"</strong><br>3. Confirm with <strong>Add</strong><br>4. The ☕ icon appears on your screen — tap to open.',
+    ios_close:'Close',
+    x_post_lbl:'X Post', copy_lbl:'Copy',
+    x_tip_t:'Publishing tip',
+    x_tip_b:'This post is up to 500 characters — ideal for X Premium. Paste it directly into X and post.',
+    refresh_lbl:'↺  New edition',
+    brew_steps:['Searching Geopolitics…','Searching Bitcoin…','Preparing Science & Health…','Writing editorial column…','Crafting X post…'],
+    no_news:'No news available.',
+    col_byline:'Editorial Column · My Take',
+    col_intro:'Beyond the headlines — here is what these stories mean for your life, your decisions, and your future.',
+  }
+};
+
+let LANG = localStorage.getItem('tfc_lang') || 'pt';
+function T(k) { return TR[LANG]?.[k] ?? TR.pt[k] ?? k; }
+
+function setLang(l) {
+  LANG = l; localStorage.setItem('tfc_lang', l);
+  document.getElementById('btn-pt').className = 'lang-btn' + (l==='pt'?' on':'');
+  document.getElementById('btn-en').className = 'lang-btn' + (l==='en'?' on':'');
+  applyTr();
+}
+
+function applyTr() {
+  document.querySelectorAll('[data-k]').forEach(el => {
+    const v = T(el.dataset.k);
+    if (v !== undefined) el.textContent = v;
+  });
+  document.querySelectorAll('[data-k-html]').forEach(el => {
+    const v = T(el.dataset.kHtml);
+    if (v !== undefined) el.innerHTML = v;
+  });
+  const sub = document.querySelector('.hero-sub');
+  if (sub) sub.innerHTML = T('hero_sub').replace('\n','<br>');
+}
+
+/* ── Date ── */
+const NOW = new Date();
+const D_SHORT   = NOW.toLocaleDateString('pt-BR',  { day:'2-digit', month:'short', year:'numeric'  });
+const D_LONG_PT = NOW.toLocaleDateString('pt-BR',  { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+const D_LONG_EN = NOW.toLocaleDateString('en-US',  { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+const D_API_PT  = NOW.toLocaleDateString('pt-BR',  { day:'2-digit', month:'long', year:'numeric' });
+const D_API_EN  = NOW.toLocaleDateString('en-US',  { month:'long', day:'numeric', year:'numeric' });
+
+document.getElementById('hdr-date').textContent = D_SHORT.toUpperCase();
+
+function secDate() { return LANG==='en' ? D_LONG_EN : D_LONG_PT; }
+
+/* ── Key persist ── */
+const SK = 'tfc_key';
+const saved = localStorage.getItem(SK)||'';
+if (saved) { document.getElementById('fld-key').value = saved; document.getElementById('btn-brew').disabled = false; }
+
+function onKey() { document.getElementById('btn-brew').disabled = document.getElementById('fld-key').value.trim().length < 20; }
+function toggleEye() { const f=document.getElementById('fld-key'); f.type = f.type==='password'?'text':'password'; }
+
+/* ── Screens ── */
+function show(id) {
+  ['s-setup','s-brew','s-error','s-content'].forEach(s => {
+    const el = document.getElementById(s);
+    const flex = s==='s-brew'||s==='s-error';
+    el.style.display = s===id ? (flex?'flex':'block') : 'none';
+  });
+  document.getElementById('nav').style.display = id==='s-content' ? 'block' : 'none';
+}
+function goSetup() { show('s-setup'); }
+
+/* ── Tabs ── */
+function goTab(id) {
+  const map = { geo:'t-geo', btc:'t-btc', sci:'t-sci', col:'t-col', x:'t-x' };
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    t.className = 'nav-tab'; if (t.dataset.t===id) t.classList.add(map[id]);
+  });
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('on'));
+  document.getElementById('pane-'+id).classList.add('on');
+  document.getElementById('body').scrollTo({ top:0, behavior:'smooth' });
+  ['geo','btc','sci','col'].forEach(k => { const e=document.getElementById('sd-'+k); if(e) e.textContent=secDate(); });
+}
+
+/* ── Parse helpers ── */
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function parseNews(raw) {
+  const blocks = raw.split(/---+/).map(b=>b.trim()).filter(Boolean);
+  const items = blocks.map(b=>({
+    title:  (b.match(/(?:TITLE|TÍTULO):\s*(.+)/)                       ||[])[1]?.trim(),
+    summary:(b.match(/(?:SUMMARY|RESUMO):\s*([\s\S]+?)(?=(?:SOURCE|FONTE):|$)/)||[])[1]?.trim(),
+    source: (b.match(/(?:SOURCE|FONTE):\s*(.+)/)                       ||[])[1]?.trim()||'—'
+  })).filter(n=>n.title&&n.summary);
+  if (!items.length && raw.length>80) return [{ title:LANG==='en'?'Summary':'Resumo', summary:raw.slice(0,600).trim(), source:'The First Coffee' }];
+  return items;
+}
+
+function parseSci(raw) {
+  return raw.split(/---+/).map(b=>b.trim()).filter(Boolean).map(b=>({
+    tag:   (b.match(/(?:TAG|CATEGORIA):\s*(.+)/)                          ||[])[1]?.trim()||'—',
+    title: (b.match(/(?:TITLE|TÍTULO):\s*(.+)/)                           ||[])[1]?.trim()||'',
+    body:  (b.match(/(?:BODY|CONTEÚDO):\s*([\s\S]+?)(?=(?:SOURCE|FONTE):|$)/)||[])[1]?.trim()||'',
+    source:(b.match(/(?:SOURCE|FONTE):\s*(.+)/)                           ||[])[1]?.trim()||'—'
+  })).filter(n=>n.title&&n.body);
+}
+
+function parseCol(raw) {
+  return raw.split(/---+/).map(b=>b.trim()).filter(Boolean).map(b=>({
+    section: (b.match(/(?:SECTION|SEÇÃO|SECÇÃO):\s*(.+)/)          ||[])[1]?.trim()||'',
+    headline:(b.match(/(?:HEADLINE|TÍTULO):\s*(.+)/)                ||[])[1]?.trim()||'',
+    body:    (b.match(/(?:BODY|TEXTO):\s*([\s\S]+)/)                ||[])[1]?.trim()||''
+  })).filter(n=>n.headline&&n.body);
+}
+
+/* ── Render ── */
+const CAT_COLOR = { geo:'#8B6010', btc:'#7A5A10', sci:'#2A5A3A' };
+
+function renderNews(cid, items, color) {
+  const el = document.getElementById(cid);
+  if (!items.length) { el.innerHTML=`<p style="font-family:var(--f-mono);font-size:12px;color:var(--muted);padding:16px 0">${T('no_news')}</p>`; return; }
+  el.innerHTML = items.map((it,i)=>`
+    <div class="ncard">
+      <span class="ncard-num" style="background:${color}">${String(i+1).padStart(2,'0')}</span>
+      <h2 class="ncard-title">${esc(it.title)}</h2>
+      <p class="ncard-body">${esc(it.summary)}</p>
+      <div class="ncard-src"><div class="ncard-rule" style="background:${color}"></div><span class="ncard-src-txt">${esc(it.source)}</span></div>
+    </div>`).join('');
+}
+
+const TOPIC_MAP = {
+  nutri:  { cls:'tp-nutri', color:'#5AAA6A' },
+  suppl:  { cls:'tp-suppl', color:'#4A8AAA' },
+  micro:  { cls:'tp-micro', color:'#AA7A3A' },
+  natur:  { cls:'tp-natur', color:'#6A8A5A' },
+  study:  { cls:'tp-study', color:'#8A6AAA' },
+  estudo: { cls:'tp-study', color:'#8A6AAA' },
+};
+function topicStyle(tag) {
+  const lc = tag.toLowerCase();
+  for (const [k,v] of Object.entries(TOPIC_MAP)) { if (lc.includes(k)) return v; }
+  return { cls:'tp-study', color:'#8A6AAA' };
+}
+
+function renderSci(items) {
+  const el = document.getElementById('c-sci');
+  if (!items.length) { el.innerHTML=`<p style="font-family:var(--f-mono);font-size:12px;color:var(--muted);padding:16px 0">${T('no_news')}</p>`; return; }
+  el.innerHTML = items.map(it=>{
+    const s=topicStyle(it.tag);
+    return `
+    <div class="stopic ${s.cls}">
+      <span class="stopic-tag" style="color:${s.color}">${esc(it.tag)}</span>
+      <div class="stopic-title">${esc(it.title)}</div>
+      <div class="stopic-body">${esc(it.body)}</div>
+      <div class="stopic-src ncard-src"><div class="ncard-rule" style="background:${s.color}"></div><span class="ncard-src-txt">${esc(it.source)}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function renderCol(items) {
+  const el = document.getElementById('c-col');
+  if (!items.length) { el.innerHTML=`<p style="font-family:var(--f-mono);font-size:12px;color:var(--muted);padding:16px 0">${T('no_news')}</p>`; return; }
+  const intro = `
+    <div class="col-intro">
+      <div class="col-byline">${T('col_byline')}</div>
+      <div class="col-intro-text">${T('col_intro')}</div>
+    </div>`;
+  const secs = items.map(it=>{
+    const lc=(it.section||'').toLowerCase();
+    const icon = lc.includes('geo')||lc.includes('polit')?'🌍':lc.includes('btc')||lc.includes('bitcoin')||lc.includes('crypto')||lc.includes('cripto')?'₿':'🔬';
+    const html = esc(it.body).split(/\n\n+/).map(p=>p.trim()).filter(Boolean).map(p=>`<p>${p}</p>`).join('');
+    return `
+    <div class="col-sec">
+      <span class="col-sec-icon">${icon}</span>
+      <div class="col-sec-label">${esc(it.section)}</div>
+      <div class="col-sec-title">${esc(it.headline)}</div>
+      <div class="col-body">${html}</div>
+    </div>`;
+  }).join('');
+  el.innerHTML = intro + secs;
+}
+
+/* ── API call ── */
+async function api(key, content, search) {
+  const body = { model:'claude-sonnet-4-6', max_tokens:2000, messages:[{role:'user',content}] };
+  if (search) body.tools = [{ type:'web_search_20250305', name:'web_search' }];
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{
+      'content-type':'application/json',
+      'x-api-key':key,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify(body)
+  });
+  if (!r.ok) {
+    let m = `HTTP ${r.status}`;
+    try { const j=await r.json(); m=j?.error?.message||m;
+      if (r.status===401) m = LANG==='en'?'Invalid API key.':'Chave API inválida. Verifique em console.anthropic.com.';
+      if (r.status===429) m = LANG==='en'?'Rate limit hit. Wait a moment.':'Limite atingido. Aguarde 1 minuto.';
+    } catch(_){}
+    throw new Error(m);
+  }
+  const d = await r.json();
+  return (d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
+}
+
+/* ── Prompts ── */
+function prompts() {
+  const d = LANG==='en' ? D_API_EN : D_API_PT;
+  const fmt_news = LANG==='en'
+    ? `EXACT format per item:\nTITLE: [title]\nSUMMARY: [2-3 sentence analysis, substantive and clear]\nSOURCE: [outlet]\n---`
+    : `Formato EXACTO por item:\nTÍTULO: [título]\nRESUMO: [análise de 2-3 frases, substancial e clara]\nFONTE: [veículo]\n---`;
+
+  if (LANG==='en') return {
+    geo:`Search the web for the 3 most important geopolitical news of today, ${d}. Impactful titles, 2-3 sentences of sharp analysis, credible source. Focus: conflicts, diplomacy, elections, sanctions, strategic shifts. Tone: serious, analytical.\n${fmt_news}`,
+
+    btc:`Search the web for the 3 most relevant Bitcoin and crypto news of today, ${d}. Include BTC price, market moves, regulation, institutional adoption, notable on-chain events. Tone: precise, informative.\n${fmt_news}`,
+
+    sci:`You are a science & health editor. Write 5 in-depth pieces for today ${d}, one each on:
+1. NUTRITION — recent study or key insight on food, diet, or nutrients that actually change health outcomes
+2. SUPPLEMENTATION — evidence-based piece on a specific supplement: benefits, optimal doses, interactions, who benefits
+3. MICROBIOME — explain gut microbiome in depth: role in immunity, mood, digestion; what research says; practical actions
+4. NATURAL MEDICINE — a plant, compound or natural approach with solid scientific backing and real-world application
+5. STUDY SPOTLIGHT — one compelling recent finding about longevity, metabolism, or disease prevention
+
+EXACT format per piece:
+TAG: [topic]
+TITLE: [engaging, specific title]
+BODY: [4 rich paragraphs: context, mechanism, evidence, practical takeaway for the reader]
+SOURCE: [journal, institution or publication]
+---`,
+
+    col:`You are a thoughtful, personal columnist. Today is ${d}.
+Write 3 editorial pieces — one each on Geopolitics, Bitcoin, and Science/Health — explaining to your reader exactly HOW today's events directly affect their real life: their safety, money, health choices, and future.
+Be warm, direct, specific. Not a news summary. A conversation with an intelligent friend who cuts through the noise.
+
+EXACT format:
+SECTION: [Geopolitics / Bitcoin / Science & Health]
+HEADLINE: [compelling, personal editorial headline]
+BODY: [3 paragraphs — para 1: what happened and why it matters; para 2: the direct real-life impact on the reader right now; para 3: what to watch, think about, or do]
+---`,
+
+    x:(geo,btc,sci)=>`You are a sharp, human social media writer. Today is ${d}.
+
+You have three news stories:
+🌍 GEOPOLITICS: ${geo}
+₿ BITCOIN: ${btc}  
+🔬 SCIENCE: ${sci}
+
+Write a single X (Twitter) post that:
+- Feels written by an intelligent human, not a press release
+- Opens with a hook that makes someone stop scrolling
+- Summarises the 3 most important points in a clear, flowing narrative
+- Explains WHY these things matter to the reader's real life
+- Has a memorable closing line or question
+- Uses 2-3 emojis naturally, not decoratively
+- Is between 400-500 characters (X Premium)
+- No hashtags (they kill flow)
+
+Write ONLY the post text. Nothing else.`
+  };
+
+  // PT-BR
+  return {
+    geo:`Pesquise na web as 3 notícias geopolíticas mais importantes de hoje, ${d}. Títulos impactantes, 2-3 frases de análise precisa, fonte credível. Foco: conflitos, diplomacia, eleições, sanções, mudanças estratégicas. Tom: sério e analítico.\n${fmt_news}`,
+
+    btc:`Pesquise na web as 3 notícias mais relevantes sobre Bitcoin e criptomoedas de hoje, ${d}. Inclua preço do BTC, movimentos de mercado, regulação, adoção institucional, eventos on-chain relevantes. Tom: preciso e informativo.\n${fmt_news}`,
+
+    sci:`Você é um editor de ciência e saúde. Escreva 5 conteúdos aprofundados para hoje ${d}, um sobre cada tema:
+1. NUTRIÇÃO — estudo recente ou insight importante sobre alimentação, padrões dietéticos ou nutrientes que realmente mudam resultados de saúde
+2. SUPLEMENTAÇÃO — conteúdo baseado em evidências sobre um suplemento específico: benefícios, doses ideais, interações, para quem se destina
+3. MICROBIOTA — explique a microbiota intestinal em profundidade: papel na imunidade, humor, digestão; o que a ciência diz; ações práticas
+4. MEDICINA NATURAL — uma planta, composto ou abordagem natural com respaldo científico sólido e aplicação real
+5. ESTUDO EM DESTAQUE — uma descoberta científica recente e relevante sobre longevidade, metabolismo ou prevenção de doenças
+
+Formato EXACTO por conteúdo:
+CATEGORIA: [tema]
+TÍTULO: [título envolvente e específico]
+CONTEÚDO: [4 parágrafos ricos: contexto, mecanismo, evidências, aplicação prática para o leitor]
+FONTE: [revista, instituição ou publicação]
+---`,
+
+    col:`Você é um colunista pessoal e perspicaz. Hoje é ${d}.
+Escreva 3 textos editoriais — um sobre Geopolítica, um sobre Bitcoin e um sobre Ciência/Saúde — explicando ao leitor COMO os eventos de hoje afectam directamente a sua vida real: segurança, dinheiro, saúde e futuro.
+Seja caloroso, directo e específico. Não é um resumo de notícias. É uma conversa com um amigo inteligente que corta o ruído.
+
+Formato EXACTO:
+SEÇÃO: [Geopolítica / Bitcoin / Ciência & Saúde]
+TÍTULO: [título editorial impactante e pessoal]
+TEXTO: [3 parágrafos — para 1: o que aconteceu e por que importa; para 2: o impacto real e directo na vida do leitor agora; para 3: o que observar, pensar ou fazer]
+---`,
+
+    x:(geo,btc,sci)=>`Você é um escritor humano e inteligente de redes sociais. Hoje é ${d}.
+
+Você tem três notícias:
+🌍 GEOPOLÍTICA: ${geo}
+₿ BITCOIN: ${btc}
+🔬 CIÊNCIA: ${sci}
+
+Escreva um único post para o X (Twitter) que:
+- Pareça escrito por um ser humano inteligente, não por uma assessoria de imprensa
+- Abra com um gancho que faça alguém parar de rolar o feed
+- Resuma os 3 pontos mais importantes numa narrativa clara e fluida
+- Explique POR QUE isso importa para a vida real do leitor
+- Tenha uma frase ou pergunta final memorável
+- Use 2-3 emojis de forma natural, não decorativa
+- Tenha entre 400-500 caracteres (X Premium)
+- Sem hashtags (matam o fluxo)
+
+Escreva APENAS o texto do post. Nada mais.`
+  };
+}
+
+/* ── Main flow ── */
+let xText = '';
+
+async function startBrew() {
+  const key = document.getElementById('fld-key').value.trim();
+  if (!key) return;
+  localStorage.setItem(SK, key);
+  show('s-brew');
+
+  const dots = [0,1,2,3,4].map(i=>document.getElementById('bd-'+i));
+  dots.forEach(d=>d.className='bdot');
+  const steps = T('brew_steps');
+  const P = prompts();
+
+  try {
+    // Step 0: Geo
+    document.getElementById('brew-lbl').textContent = steps[0];
+    dots[0].className='bdot active';
+    const geoRaw = await api(key, P.geo, true);
+    const geoItems = parseNews(geoRaw);
+    renderNews('c-geo', geoItems, CAT_COLOR.geo);
+    dots[0].className='bdot done';
+
+    // Step 1: BTC
+    document.getElementById('brew-lbl').textContent = steps[1];
+    dots[1].className='bdot active';
+    const btcRaw = await api(key, P.btc, true);
+    const btcItems = parseNews(btcRaw);
+    renderNews('c-btc', btcItems, CAT_COLOR.btc);
+    dots[1].className='bdot done';
+
+    // Step 2: Science
+    document.getElementById('brew-lbl').textContent = steps[2];
+    dots[2].className='bdot active';
+    const sciRaw = await api(key, P.sci, false);
+    const sciItems = parseSci(sciRaw);
+    renderSci(sciItems);
+    dots[2].className='bdot done';
+
+    // Step 3: Column
+    document.getElementById('brew-lbl').textContent = steps[3];
+    dots[3].className='bdot active';
+    const colRaw = await api(key, P.col, false);
+    const colItems = parseCol(colRaw);
+    renderCol(colItems);
+    dots[3].className='bdot done';
+
+    // Step 4: X post
+    document.getElementById('brew-lbl').textContent = steps[4];
+    dots[4].className='bdot active';
+    const geoSum = geoItems.slice(0,2).map(n=>n.title).join('; ');
+    const btcSum = btcItems.slice(0,2).map(n=>n.title).join('; ');
+    const sciSum = sciItems.slice(0,2).map(n=>n.title).join('; ');
+    xText = await api(key, P.x(geoSum,btcSum,sciSum), false);
+    document.getElementById('x-body').textContent = xText;
+    const cnt = document.getElementById('x-cnt');
+    cnt.textContent = xText.length+'/500';
+    cnt.className = 'x-count'+(xText.length>500?' warn':'');
+    dots[4].className='bdot done';
+
+    // Update section dates
+    ['geo','btc','sci','col'].forEach(k=>{ const e=document.getElementById('sd-'+k); if(e) e.textContent=secDate(); });
+
+    show('s-content');
+    goTab('geo');
+
+  } catch(err) {
+    document.getElementById('err-box').textContent = err.message||'Erro desconhecido.';
+    show('s-error');
+  }
+}
+
+/* ── Copy X ── */
+function copyX() {
+  if (!xText) return;
+  const btn = document.getElementById('btn-copy');
+  const ok = () => {
+    btn.querySelector('[data-k]').textContent = LANG==='en'?'✓ Copied':'✓ Copiado';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.querySelector('[data-k]').textContent=T('copy_lbl'); btn.classList.remove('copied'); }, 2300);
+  };
+  navigator.clipboard?.writeText(xText).then(ok).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=xText; ta.style.cssText='position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    ok();
+  });
+}
+
+/* ── iOS detect ── */
+const isIOS        = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone = window.navigator.standalone===true;
+const isSafariOnly = /safari/i.test(navigator.userAgent) && !/crios|fxios|chrome/i.test(navigator.userAgent);
+
+if (isIOS && isSafariOnly) {
+  // Show install card in setup
+  const ic = document.getElementById('install-card');
+  if (ic) ic.style.display = 'block';
+  // Show bottom hint if not standalone, after delay
+  if (!isStandalone) {
+    setTimeout(()=>{ document.getElementById('ios-hint').style.display='block'; }, 8000);
+  }
+}
+
+/* ── Splash → App ── */
+function showApp() {
+  const splash = document.getElementById('splash');
+  const shell  = document.getElementById('shell');
+  splash.classList.add('fade-out');
+  setTimeout(()=>{
+    splash.style.display='none';
+    shell.classList.add('visible');
+  }, 650);
+}
+
+// Wait for bar animation to finish (~3.1s total) then reveal
+setTimeout(showApp, 3100);
+
+/* ── Init ── */
+setLang(LANG);
+</script>
+
+</body>
+</html>
